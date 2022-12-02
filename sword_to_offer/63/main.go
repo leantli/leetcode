@@ -22,9 +22,8 @@ func maxProfit(prices []int) int {
 func max(a, b int) int {
 	if a > b {
 		return a
-	} else {
-		return b
 	}
+	return b
 }
 
 // // 继续先不用 dp，借用个 map，只保存 截止到遍历位置前 最低点股票的价格
