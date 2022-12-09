@@ -42,7 +42,7 @@ func getKthFromEnd(head *ListNode, k int) *ListNode {
 // 	return head
 // }
 
-// type ListNode struct {
-// 	Val  int
-// 	Next *ListNode
-// }
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
