@@ -3,44 +3,83 @@ package main
 // https://leetcode.cn/problems/zui-xiao-de-kge-shu-lcof/?envType=study-plan&id=lcof&plan=lcof&plan_progress=131d40r
 // 40. 最小的k个数
 
+// 堆排的优化思路 20 ms，全部堆排后取前 k (32 ms)
+// 只维护一个大小为 k 的大根堆，然后进行遍历，当遇到小于 大根堆 堆顶的数时，再弹出堆顶，重新维护堆
+// 这种和全部堆排再取前 k 相比，效率应该更高些
 func getLeastNumbers(arr []int, k int) []int {
-	if len(arr) == 0 || len(arr) == k {
+	if k == len(arr) {
 		return arr
 	}
-	arr = mergeSort(arr)
+	getHeap(arr[:k], k)
+	for _, num := range arr[k:] {
+		if num < arr[0] {
+			arr[0] = num
+			heapify(arr[:k], k, 0)
+		}
+	}
 	return arr[:k]
 }
 
-// 最后再来个归并好了
-func mergeSort(nums []int) []int {
-	// 考虑递归截止条件，什么时候停止继续切分
-	if len(nums) <= 1 {
-		return nums
+// 堆排的另一种操作，先写个维护堆性质的函数, i 为待维护的局部堆堆顶下标
+func heapify(heap []int, len, i int) {
+	largest, left, right := i, i*2+1, i*2+2
+	if left < len && heap[largest] < heap[left] {
+		largest = left
 	}
-	// 先分后合
-	mid := len(nums) / 2
-	left, right := mergeSort(nums[:mid]), mergeSort(nums[mid:])
-	// 最后合
-	return merge(left, right)
+	if right < len && heap[largest] < heap[right] {
+		largest = right
+	}
+	if largest == i {
+		return
+	}
+	heap[largest], heap[i] = heap[i], heap[largest]
+	heapify(heap, len, largest)
 }
 
-// 合并两个数组
-func merge(left, right []int) []int {
-	l, r := 0, 0
-	res := make([]int, 0, len(left)+len(right))
-	for l < len(left) && r < len(right) {
-		if left[l] < right[r] {
-			res = append(res, left[l])
-			l++
-		} else {
-			res = append(res, right[r])
-			r++
-		}
+func getHeap(arr []int, len int) {
+	for i := len/2 - 1; i >= 0; i-- {
+		heapify(arr, len, i)
 	}
-	res = append(res, left[l:]...)
-	res = append(res, right[r:]...)
-	return res
 }
+
+// func getLeastNumbers(arr []int, k int) []int {
+// 	if len(arr) == 0 || len(arr) == k {
+// 		return arr
+// 	}
+// 	arr = mergeSort(arr)
+// 	return arr[:k]
+// }
+
+// // 最后再来个归并好了
+// func mergeSort(nums []int) []int {
+// 	// 考虑递归截止条件，什么时候停止继续切分
+// 	if len(nums) <= 1 {
+// 		return nums
+// 	}
+// 	// 先分后合
+// 	mid := len(nums) / 2
+// 	left, right := mergeSort(nums[:mid]), mergeSort(nums[mid:])
+// 	// 最后合
+// 	return merge(left, right)
+// }
+
+// // 合并两个数组
+// func merge(left, right []int) []int {
+// 	l, r := 0, 0
+// 	res := make([]int, 0, len(left)+len(right))
+// 	for l < len(left) && r < len(right) {
+// 		if left[l] < right[r] {
+// 			res = append(res, left[l])
+// 			l++
+// 		} else {
+// 			res = append(res, right[r])
+// 			r++
+// 		}
+// 	}
+// 	res = append(res, left[l:]...)
+// 	res = append(res, right[r:]...)
+// 	return res
+// }
 
 // // 快排+剪枝 == 快速选择，接下来再看看堆排序咋搞
 // // 先写个常规的堆排
