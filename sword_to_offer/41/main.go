@@ -21,25 +21,53 @@ func Constructor() MedianFinder {
 	}
 }
 
+// 440ms 先判断处理一下，再看看情况
 func (this *MedianFinder) AddNum(num int) {
-	// 只看 len 长度，当两堆长度相等的时候，先丢进大根堆排个序，再把大根堆堆顶丢进小根堆
-	if len(this.heapMin) == len(this.heapMax) {
-		this.heapMax = append(this.heapMax, num)
-		buildHeapMax(this.heapMax)
+	// 当小根堆为空的时候优先进小根堆，以及比小根堆堆顶大的值也直接进小根堆
+	// 如果此时长度已经比大根堆的长度大了 2+，则把原先的堆顶给大根堆，因为新进的值必定比堆顶大
+	if len(this.heapMin) == 0 || num >= this.heapMin[0] {
+		this.heapMin = append(this.heapMin, num)
+		if len(this.heapMin) > len(this.heapMax)+1 {
+			this.heapMax = append(this.heapMax, this.heapMin[0])
+			buildHeapMax(this.heapMax)
+			this.heapMin = this.heapMin[1:]
+			buildHeapMin(this.heapMin)
+		}
+		buildHeapMin(this.heapMin)
+		return
+	}
+	// 大根堆这边的逻辑和小根堆也差不多，但是其长度限制为 小于等于 小根堆的长度，保证中位数返回更方便
+	// 并且 <= this.heapMin[0] 的 num 进入 heapMax 后还得先堆化一遍
+	this.heapMax = append(this.heapMax, num)
+	buildHeapMax(this.heapMax)
+	if len(this.heapMax) > len(this.heapMin) {
 		this.heapMin = append(this.heapMin, this.heapMax[0])
 		buildHeapMin(this.heapMin)
 		this.heapMax = this.heapMax[1:]
 		buildHeapMax(this.heapMax)
-		return
 	}
-	// 不等时肯定是大根堆长度小，先丢进小根堆排个序，再把小根堆堆顶丢进大根堆
-	this.heapMin = append(this.heapMin, num)
-	buildHeapMin(this.heapMin)
-	this.heapMax = append(this.heapMax, this.heapMin[0])
-	buildHeapMax(this.heapMax)
-	this.heapMin = this.heapMin[1:]
-	buildHeapMin(this.heapMin)
 }
+
+// // 600ms 不管那么多有的没的判断，不管怎么样都先去另一个堆排个序，再丢去别的堆
+// func (this *MedianFinder) AddNum(num int) {
+// 	// 只看 len 长度，当两堆长度相等的时候，先丢进大根堆排个序，再把大根堆堆顶丢进小根堆
+// 	if len(this.heapMin) == len(this.heapMax) {
+// 		this.heapMax = append(this.heapMax, num)
+// 		buildHeapMax(this.heapMax)
+// 		this.heapMin = append(this.heapMin, this.heapMax[0])
+// 		buildHeapMin(this.heapMin)
+// 		this.heapMax = this.heapMax[1:]
+// 		buildHeapMax(this.heapMax)
+// 		return
+// 	}
+// 	// 不等时肯定是大根堆长度小，先丢进小根堆排个序，再把小根堆堆顶丢进大根堆
+// 	this.heapMin = append(this.heapMin, num)
+// 	buildHeapMin(this.heapMin)
+// 	this.heapMax = append(this.heapMax, this.heapMin[0])
+// 	buildHeapMax(this.heapMax)
+// 	this.heapMin = this.heapMin[1:]
+// 	buildHeapMin(this.heapMin)
+// }
 
 func (this *MedianFinder) FindMedian() float64 {
 	// fmt.Printf("min:%v ; max:%v\n", this.heapMin, this.heapMax)
