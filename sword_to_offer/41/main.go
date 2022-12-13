@@ -33,7 +33,6 @@ func (this *MedianFinder) AddNum(num int) {
 			this.heapMin = this.heapMin[1:]
 			buildHeapMin(this.heapMin)
 		}
-		buildHeapMin(this.heapMin)
 		return
 	}
 	// 大根堆这边的逻辑和小根堆也差不多，但是其长度限制为 小于等于 小根堆的长度，保证中位数返回更方便
