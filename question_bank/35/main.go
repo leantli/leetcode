@@ -39,3 +39,20 @@ func searchInsert(nums []int, target int) int {
 	}
 	return r
 }
+
+// // 搜索插入位置，类似于准确值模板，但未搜到时，r 会落在 最大的 小于 target 的值的下标，因此此时插入位置为 r + 1
+// // 未搜到时 l 落在 最小的 大于 target 的值的下标
+// func searchInsert(nums []int, target int) int {
+//     l, r := 0, len(nums)-1
+//     for l <= r {
+//         mid := l + (r-l)/2
+//         if nums[mid] < target {
+//             l = mid + 1
+//         } else if nums[mid] > target {
+//             r = mid - 1
+//         } else {
+//             return mid
+//         }
+//     }
+//     return r+1
+// }

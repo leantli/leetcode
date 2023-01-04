@@ -34,23 +34,45 @@ package main
 //		6 7 8
 //
 // 6 位于 6/3=2 数组上的第 6%3=0 下标
+// func searchMatrix(matrix [][]int, target int) bool {
+// 	n, m := len(matrix), len(matrix[0])
+// 	l, r := -1, n*m
+// 	for l+1 != r {
+// 		mid := l + (r-l)/2
+// 		if matrix[mid/m][mid%m] < target {
+// 			l = mid
+// 		} else {
+// 			r = mid
+// 		}
+// 	}
+// 	// 后处理一下
+// 	if r == n*m {
+// 		return false
+// 	}
+// 	if matrix[r/m][r%m] != target {
+// 		return false
+// 	}
+// 	return true
+// }
+
+// 这次用一下准确值模板
+// 这个二维数组拉成一维的也是递增的，因此可以直接按一维处理二分，时间复杂度为 log(n*m)
 func searchMatrix(matrix [][]int, target int) bool {
 	n, m := len(matrix), len(matrix[0])
-	l, r := -1, n*m
-	for l+1 != r {
+	if n == 0 || m == 0 {
+		return false
+	}
+	l, r := 0, n*m-1
+	for l <= r {
 		mid := l + (r-l)/2
-		if matrix[mid/m][mid%m] < target {
-			l = mid
+		y, x := mid/m, mid%m
+		if matrix[y][x] == target {
+			return true
+		} else if matrix[y][x] > target {
+			r = mid - 1
 		} else {
-			r = mid
+			l = mid + 1
 		}
 	}
-	// 后处理一下
-	if r == n*m {
-		return false
-	}
-	if matrix[r/m][r%m] != target {
-		return false
-	}
-	return true
+	return false
 }
