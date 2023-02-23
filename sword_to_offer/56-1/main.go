@@ -3,6 +3,8 @@ package main
 // https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/?envType=study-plan&id=lcof&plan=lcof&plan_progress=131d40r
 // 56-1. 数组中数字出现的次数
 
+// 相似题型：剑指03,56-1;;leetcode-287,26,136,137,260
+
 // 1. 最基础的解法：如果想不到位运算，map 后两次遍历也能解决，但是要求空间复杂度为 O(1)，因此舍去
 
 // 2. 出现两次的数字，其二进制数是相同的，可以采用异或，遍历后剩余的数即是 A^B
@@ -37,3 +39,36 @@ func singleNumbers(nums []int) []int {
 	}
 	return []int{res, res ^ xor}
 }
+
+// // 二刷
+// // 空间复杂度是 O(n) 的话就简单
+// // 但是要求 O(1)
+// // 考虑是位运算，出现两次的基于异或结果是 0
+// // 最终得到的结果的二进制，是我们要的两个数的异或结果
+// // 此时我们有这两个数的异或结果
+// // 那么我们可以基于这个异或结果去取得我们要的两个数其中之一
+// // 比如说异或结果是 00100，此时我们知道，两个数的二进制位在倒数第三位上是 1
+// // 两个数的二进制在倒数第三位上是不同的
+// // 我们可以基于这个第三位，再一次遍历数组，只有第三位为 1 的再异或
+// // 此时 第三位为 1 的，就只有一部分重复的数和我们要的两个数之一
+// // 得到了两个数之一，再与此前的异或结果相异或，就能得到另一个数
+// func singleNumbers(nums []int) []int {
+// 	var twoRes int
+// 	for _, num := range nums {
+// 		twoRes ^= num
+// 	}
+// 	// 取异或结果最低的一位 1
+// 	flag := 1
+// 	for flag&twoRes == 0 {
+// 		flag <<= 1
+// 	}
+// 	var a, b int
+// 	for _, num := range nums {
+// 		if num&flag == 0 {
+// 			a ^= num
+// 		} else {
+// 			b ^= num
+// 		}
+// 	}
+// 	return []int{a, b}
+// }
