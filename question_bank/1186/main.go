@@ -9,8 +9,9 @@ import "math"
 // 选出一个子数组，该子数组是所有子数组中最大的(可以删一个，相当于允许间隔一个数？)
 // 相比较 53， 多了一个删除操作，多了这个操作后，我们需要区分 未删除/删除 两个子状态
 // 如果不考虑删除，其 dp 和 53 一致， dp[i] = max(dp[i-1] + nums[i], nums[i])
-// 如果考虑删除，deleted[i]要么是删除当前数，即 deleted[i]=dp[i-1]
-// 要么就是之前已经删除过了，只要加上当前数，因此 deleted[i] = max(deleted[i-1]+nums[i], dp[i-1])
+// 如果考虑删除，deleted[i]要么是删除当前数( deleted[i]=dp[i-1] )
+// 要么就是之前已经删除过了，只要加上当前数 ( deleted[i-1]+nums[i] )
+// 因此 deleted[i] = max(deleted[i-1]+nums[i], dp[i-1])
 // 此时我们又关注到，虽然有两个状态，但是每次都只需要 i 和 i-1，因此我们可以简单用两个局部变量替代，减少空间复杂度
 func maximumSum(arr []int) int {
 	// 初始化
