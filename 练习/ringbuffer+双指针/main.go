@@ -39,10 +39,29 @@ func GetRingBuffer() *ringBuffer {
 		rb = &ringBuffer{}
 		for i := range rb.handleChan {
 			rb.handleChan[i] = make(chan *Message, bufferSize)
-			go HandleChanMsg(rb.handleChan[i])
+			go rb.startPolling()
+			go rb.Commit()
 		}
 	})
 	return rb
+}
+
+func (rb *ringBuffer) startPolling() {
+	var wg sync.WaitGroup
+	for i := range rb.handleChan {
+		wg.Add(1)
+		// 以下 func 可以单独抽成一个处理消息函数
+		go func(c chan *Message) {
+			for msg := range c {
+				// 省略处理消息的逻辑...
+				time.Sleep(500 * time.Millisecond)
+				atomic.CompareAndSwapUint32(&msg.Status, statusNew, statusFinished)
+				log.Printf("%v 已成功处理\n", msg)
+			}
+			wg.Done()
+		}(rb.handleChan[i])
+	}
+	wg.Wait()
 }
 
 // Pull 拉取消息
@@ -78,22 +97,9 @@ func (rb *ringBuffer) Commit() {
 	}
 }
 
-func HandleChanMsg(c chan *Message) {
-	for msg := range c {
-		// 省略处理逻辑...
-		time.Sleep(500 * time.Millisecond)
-		atomic.CompareAndSwapUint32(&msg.Status, statusNew, statusFinished)
-		log.Printf("%v 已成功处理\n", msg)
-	}
-}
-
 func main() {
 	// 初始化
 	b := GetRingBuffer()
-
-	go func() {
-		b.Commit()
-	}()
 
 	// 模拟生成消息并入队
 	const numMessages = 100
