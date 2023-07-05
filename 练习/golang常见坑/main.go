@@ -311,3 +311,57 @@ Go语言是带内存自动回收的特性，因此内存一般不会泄漏
 // 		}
 // 	}
 // }
+
+/**
+容器中的 GOMAXPROCS
+自 Go 1.5 开始， Go 的 GOMAXPROCS 默认值已经设置为 CPU 的核数，但是在 Docker 或 k8s 容器中 runtime.GOMAXPROCS() 获取的是 宿主机的 CPU 核数 。
+这样会导致 P 值设置过大，导致生成线程过多，会增加上下文切换的负担，导致严重的上下文切换，浪费 CPU
+所以可以使用 uber 的 automaxprocs 库，大致原理是读取 CGroup 值识别容器的 CPU quota，计算得到实际核心数，并自动设置 GOMAXPROCS 线程数量
+**/
+
+// // slice 扩容地址发生改变
+// func main() {
+// 	s := []int{1, 2}
+// 	for i := 0; i < 16; i++ {
+// 		s = append(s, 3, 4, 5)
+// 		fmt.Printf("add:%p, len:%d, cap:%d\n", s, len(s), cap(s))
+// 	}
+// }
+
+// // golang 的 mutex 不可重入
+// func main() {
+// 	m := sync.Mutex{}
+// 	m.Lock()
+// 	m.Lock()
+// 	m.Lock()
+// 	m.Unlock()
+// 	m.Unlock()
+// 	m.Unlock()
+// }
+
+// 生成固定数量的协程，接收某一 chan 的消息处理
+// func main() {
+// 	c := make(chan bool)
+// 	// 固定死只有 10 个处理协程
+// 	for i := 0; i < 10; i++ {
+// 		go func() {
+// 			for v := range c {
+// 				fmt.Println(v)
+// 			}
+// 		}()
+// 	}
+// }
+
+// 基于带缓冲的 chan，缓冲满时阻塞的原理->实现缓冲长度的并发协程数量
+// func main() {
+// 	c := make(chan bool, 3)
+// 	// 有 1000 个请求，耦合生产和消费，管道长度即最大并发数
+// 	for i := 0; i < 1000; i++ {
+// 		c <- true
+// 		i := i
+// 		go func() {
+// 			fmt.Println(i)
+// 			<-c
+// 		}()
+// 	}
+// }
