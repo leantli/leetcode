@@ -40,8 +40,8 @@ func GetRingBuffer() *ringBuffer {
 		for i := range rb.handleChan {
 			rb.handleChan[i] = make(chan *Message, bufferSize)
 			go rb.startPolling()
-			go rb.Commit()
 		}
+		go rb.Commit()
 	})
 	return rb
 }
@@ -67,32 +67,46 @@ func (rb *ringBuffer) startPolling() {
 // Pull 拉取消息
 func (rb *ringBuffer) Pull(msg *Message) bool {
 	rb.pullIndex = rb.pullIndex % bufferSize
+	var cnt int
 	for {
 		// 当 pull 指针指向的位置为空 或 指向的旧消息已经提交，则可以新拉消息
 		if rb.buffer[rb.pullIndex] == nil || atomic.LoadUint32(&rb.buffer[rb.pullIndex].Status) == statusAcked {
 			// 新拉下的 Message 状态默认为 0，即 statusNew，因此无需 CAS 状态
 			rb.buffer[rb.pullIndex] = msg
 			rb.handleChan[msg.ID%bufferSize] <- msg
-			log.Printf("%v 已加入缓冲圈\n", msg)
+			log.Printf("%v 已加入缓冲圈，当前 pullIndex:%d\n", msg, rb.pullIndex)
 			rb.pullIndex++
 			return true
+		}
+		cnt++
+		if cnt == 10 {
+			// runtime.Gosched()
+			time.Sleep(time.Millisecond * 500)
+			cnt = 0
 		}
 	}
 }
 
 // Commit 提交消息
 func (rb *ringBuffer) Commit() {
+	var cnt int
 	for {
 		rb.commitIndex = rb.commitIndex % bufferSize
 		// 当 commit 指针指向的位置为空 或者 指向的旧消息还没处理完成，则不能提交
 		if rb.buffer[rb.commitIndex] == nil || atomic.LoadUint32(&rb.buffer[rb.commitIndex].Status) != statusFinished {
+			cnt++
+			if cnt == 10 {
+				// runtime.Gosched()
+				time.Sleep(time.Millisecond * 500)
+				cnt = 0
+			}
 			continue
 		}
 		msg := rb.buffer[rb.commitIndex]
-		log.Printf("%v 已提交\n", msg)
 		// 省略 Kafka 手动提交commitIndex位置的消息，接下来移动 commit指针....
 		time.Sleep(50 * time.Millisecond)
 		atomic.CompareAndSwapUint32(&msg.Status, statusFinished, statusAcked)
+		log.Printf("%v 已提交，当前 commitIndex:%d\n", msg, rb.commitIndex)
 		rb.commitIndex++
 	}
 }
