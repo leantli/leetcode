@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // https://leetcode.cn/problems/bu-ke-pai-zhong-de-shun-zi-lcof/?envType=study-plan&id=lcof&plan=lcof&plan_progress=131d40r
 // 61. 扑克牌中的顺子
@@ -35,19 +38,19 @@ import "fmt"
 // 	return true
 // }
 
-// 草，看了大佬的，感觉自己的想法还是弱了
+// 大佬写法：除了 0 以外，没有重复，最大值和最小值差是 4 即为 顺子
 func isStraight(nums []int) bool {
+	sort.Ints(nums)
 	var joker int
-	quickSort(nums, 0, len(nums)-1)
-	for i := 0; i < 4; i++ {
-		if nums[i] == 0 {
+	for i, num := range nums {
+		if num == 0 {
 			joker++
-		} else if nums[i] == nums[i+1] {
+		} else if i < 4 && num == nums[i+1] {
 			return false
 		}
 	}
-	// 此时 nums[joker] 指向除 0 之外最小的数，只要满足 max - min > 5，此时就是顺子！
-	return (nums[4] - nums[joker]) > 5
+	// 此时 nums[joker] 指向除 0 之外最小的数，只要满足 max - min < 5，此时就是顺子！
+	return (nums[4] - nums[joker]) < 5
 }
 
 // 交换法快排

@@ -33,6 +33,7 @@ func singleNumbers(nums []int) []int {
 
 	var res int
 	for _, num := range nums {
+		// 这里要注意是等于 0，不能等于 1，因为 num 只会有某 1 位因为 flag 而置为 0，并不是结果等于 0
 		if num&flag == 0 {
 			res ^= num
 		}

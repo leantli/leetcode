@@ -7,18 +7,18 @@ package main
 
 // 每个数组只出现一次，二刷
 // 从后往前更好写？
-func removeDuplicates(nums []int) int {
-	n := len(nums)
-	if n < 2 {
-		return n
-	}
-	for i := n - 1; i >= 1; i-- {
-		if nums[i] == nums[i-1] {
-			nums = append(nums[:i], nums[i+1:]...)
-		}
-	}
-	return len(nums)
-}
+// func removeDuplicates(nums []int) int {
+// 	n := len(nums)
+// 	if n < 2 {
+// 		return n
+// 	}
+// 	for i := n - 1; i >= 1; i-- {
+// 		if nums[i] == nums[i-1] {
+// 			nums = append(nums[:i], nums[i+1:]...)
+// 		}
+// 	}
+// 	return len(nums)
+// }
 
 // // 题目只需要返回删除后的长度，因此我们并不需要真的做删除操作
 // // 但是该题会校验原数组，因此我们不得不对原数组进行操作

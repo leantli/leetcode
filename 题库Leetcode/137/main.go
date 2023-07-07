@@ -11,15 +11,15 @@ package main
 // 所以注意各个位相加时，取 int32，最后再转成 int 返回
 func singleNumber(nums []int) int {
 	var bitSum [32]int
-	for _, num := range nums {
+	for i := 0; i < 32; i++ {
 		// 取 num 每一位是否为 1，是就在该位上 +1
-		for i := 0; i < 32; i++ {
-			bitSum[31-i] += (num >> i) & 1
+		for _, num := range nums {
+			bitSum[i] += (num >> i) & 1
 		}
 	}
 	var res int32
-	for i := 31; i >= 0; i-- {
-		res += int32((bitSum[i] % 3) << (31 - i))
+	for i := 0; i < 32; i++ {
+		res += int32((bitSum[i] % 3) << i)
 	}
 	return int(res)
 }

@@ -58,15 +58,15 @@ func exchange(nums []int) []int {
 	n := len(nums)
 	l, r := 0, n-1
 	for l < r {
-		if (nums[l] & 1) == 1 {
+		// 是奇数则左指针正常向右遍历，直到遇见偶数
+		if l < r && (nums[l]&1) == 1 {
 			l++
 		}
-		if (nums[r] & 1) != 1 {
+		// 是偶数则右指针正常向左遍历，直到遇见奇数
+		if l < r && (nums[r]&1) != 1 {
 			r--
 		}
-		if l < r {
-			nums[l], nums[r] = nums[r], nums[l]
-		}
+		nums[l], nums[r] = nums[r], nums[l]
 	}
 	return nums
 }

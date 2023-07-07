@@ -4,22 +4,22 @@ package main
 // 32-2 从上到下打印二叉树 2
 
 func levelOrder(root *TreeNode) [][]int {
-	var res [][]int
+	res := make([][]int, 0)
 	if root == nil {
 		return res
 	}
 	queue := []*TreeNode{root}
 	for len(queue) != 0 {
 		length := len(queue)
-		var temp []int
+		temp := make([]int, 0, length)
 		for i := 0; i < length; i++ {
+			temp = append(temp, queue[i].Val)
 			if queue[i].Left != nil {
 				queue = append(queue, queue[i].Left)
 			}
 			if queue[i].Right != nil {
 				queue = append(queue, queue[i].Right)
 			}
-			temp = append(temp, queue[i].Val)
 		}
 		queue = queue[length:]
 		res = append(res, temp)

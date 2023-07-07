@@ -6,7 +6,6 @@ package main
 // 逆序对，并且要注意是未排序后的
 // 这里可以显然可以基于归并排序去统计，在并时判断左侧数组的值是否大于右侧数组的最大值
 // 也就是使用归并排序，排成降序，每次左侧首位大于右侧首位，则逆序对数量 += len(右侧数组)
-
 func reversePairs(nums []int) int {
 	var res int
 	var merge func(left, right []int) []int
@@ -26,6 +25,7 @@ func reversePairs(nums []int) int {
 		temp = append(temp, right...)
 		return temp
 	}
+	// 先拆，后合并，合并时采用降序排序，便于统计左侧的数能够和右侧的数构成多少逆序对
 	var mergeSort func(nums []int) []int
 	mergeSort = func(nums []int) []int {
 		if len(nums) <= 1 {
@@ -38,11 +38,4 @@ func reversePairs(nums []int) int {
 	}
 	mergeSort(nums)
 	return res
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

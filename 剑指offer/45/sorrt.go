@@ -8,10 +8,25 @@ import (
 // https://leetcode.cn/problems/ba-shu-zu-pai-cheng-zui-xiao-de-shu-lcof/?envType=study-plan&id=lcof&plan=lcof&plan_progress=131d40r
 // 45. 把数组排成最小的数
 
+// 借用 api 简易方法
+// func minNumber(nums []int) string {
+// 	strs := make([]string, len(nums))
+// 	for i := range nums {
+// 		strs[i] = strconv.Itoa(nums[i])
+// 	}
+// 	sort.Slice(strs, func(i, j int) bool {
+// 		return strs[i]+strs[j] < strs[j]+strs[i]
+// 	})
+// 	bs := strings.Builder{}
+// 	for i := range strs {
+// 		bs.WriteString(strs[i])
+// 	}
+// 	return bs.String()
+// }
+
 // 越小的在越前面，但是 30 又在 3 前面。。
-// 如何比较比较好？303 < 330， maybe 两个前后相加再比较？
-// 这里还得注意，最好转成字符串拼接好再转成数字，不然不好处理
-// 然后基于此比较方式再排序？
+// 如何比较比较好？303 < 330， maybe 两个转成字符串之后再拼接再比较？
+// 排序判断规则：若拼接字符串 x+y>y+x ，则 x “大于” y ；反之，若 x+y<y+x ，则 x “小于” y
 func minNumber(nums []int) string {
 	strNums := make([]string, 0, len(nums))
 	for _, num := range nums {
