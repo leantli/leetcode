@@ -8,7 +8,7 @@ package main
 // 要求 logn 大概率得用二分解决了
 // 这里怎么使用二分呢？
 // 我们要保证，每次缩减时，往正确的方向去缩减
-// 先写一下看看情况
+// 先写一下看看情况----这里是找准确值，因此采用 l <= r，并且 l 和 r 的 mid 更新一定都会加减，因为已经确认了 mid 不是 target
 func search(nums []int, target int) int {
 	n := len(nums)
 	if n == 0 {

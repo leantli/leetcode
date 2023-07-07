@@ -8,25 +8,46 @@ package main
 // 有的话就看看这个字母上次出现的位置是否大于 l 左指针
 // 大于的话就移动 l 指针到上次出现的位置处 +1
 // 统一存储当前字母及其位置，顺便计算下子串长度
-func lengthOfLongestSubstring(s string) int {
-	bs := []byte(s)
-	n := len(bs)
-	m := make(map[byte]int)
-	res := 0
-	l := 0
-	for i := 0; i < n; i++ {
-		if _, ok := m[bs[i]]; ok {
-			if m[bs[i]] >= l {
-				l = m[bs[i]] + 1
-			}
-		}
-		m[bs[i]] = i
-		res = Max(res, i-l+1)
-	}
-	return res
-}
+// func lengthOfLongestSubstring(s string) int {
+// 	bs := []byte(s)
+// 	n := len(bs)
+// 	m := make(map[byte]int)
+// 	res := 0
+// 	l := 0
+// 	for i := 0; i < n; i++ {
+// 		if _, ok := m[bs[i]]; ok {
+// 			if m[bs[i]] >= l {
+// 				l = m[bs[i]] + 1
+// 			}
+// 		}
+// 		m[bs[i]] = i
+// 		res = Max(res, i-l+1)
+// 	}
+// 	return res
+// }
 
-func Max(a, b int) int {
+// func Max(a, b int) int {
+// 	if a > b {
+// 		return a
+// 	}
+// 	return b
+// }
+
+// 不定长滑窗
+func lengthOfLongestSubstring(s string) int {
+	var l, maxRes int
+	// 保证窗口内没有重复字符，一来存储窗口内有的字符，二来用于缩小窗口 l 边界
+	m := make(map[byte]int)
+	for r := 0; r < len(s); r++ {
+		if idx, ok := m[s[r]]; ok && idx >= l {
+			l = idx + 1
+		}
+		m[s[r]] = r
+		maxRes = max(r-l+1, maxRes)
+	}
+	return maxRes
+}
+func max(a, b int) int {
 	if a > b {
 		return a
 	}

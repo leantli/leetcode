@@ -14,10 +14,9 @@ func strToInt(str string) int {
 	if len == 0 {
 		return 0
 	}
-	bs := []byte(str)
 	index := 0
 	// 先对空格做处理，不要在一个大的 for 循环中处理各种情况
-	for bs[index] == ' ' {
+	for str[index] == ' ' {
 		index++
 		if index == len {
 			return 0
@@ -25,10 +24,10 @@ func strToInt(str string) int {
 	}
 	// 对符号做处理
 	sign := 1
-	if bs[index] == '-' {
+	if str[index] == '-' {
 		sign = -1
 	}
-	if bs[index] == '-' || bs[index] == '+' {
+	if str[index] == '-' || str[index] == '+' {
 		index++
 	}
 	// 对数值做处理，res 用于返回结果, bigJudge 判断是否在[INT_MIN,  INT_MAX]区间内
@@ -36,10 +35,10 @@ func strToInt(str string) int {
 	// 担心溢出的可以 math.MaxInt32/10 在此阶段进行判断
 	res, bigJudge := 0, math.MaxInt32
 	for i := index; i < len; i++ {
-		if bs[i] < '0' || bs[i] > '9' {
+		if str[i] < '0' || bs[i] > '9' {
 			break
 		}
-		res = res*10 + int(bs[i]-'0')
+		res = res*10 + int(str[i]-'0')
 		if res > bigJudge {
 			if sign == 1 {
 				return math.MaxInt32

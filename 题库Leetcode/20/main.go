@@ -3,6 +3,8 @@ package main
 // https://leetcode.cn/problems/valid-parentheses/
 // 20. 有效的括号
 
+// 进阶题目：32. 最长有效括号 https://leetcode.cn/problems/longest-valid-parentheses/
+
 func isValid(s string) bool {
 	// 栈中放左括号
 	stack := make([]byte, 0)

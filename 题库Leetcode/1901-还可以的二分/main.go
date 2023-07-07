@@ -8,19 +8,17 @@ package main
 // 我们显然拒绝暴力遍历，之前对每行求峰值，实际上并不是每行的最大值，存在遗漏
 // 因此每行找最大值，组成一个数组后再二分找峰值，但是又不能遍历完全部找每行的最大值，否则还不如全遍历找全部数的最大值
 // 因此我们只需要找到每行最大值数组前面的峰值即可
-// 接下来就是只记录当前行的最大值和上一行的最大值即可，当当前行最大值小于前一行最大值，说明上一行就是一个峰顶
-// 当然，也有可能遇到最后才是峰顶，并且 m 值很大，此时还可以使用二分，但我们就必须每次计算三行的最大值，去判断向哪个方向缩进
 func findPeakGrid(mat [][]int) []int {
 	m := len(mat)
-	var lastMax, index int
+	var lastMax, lastIndex int
 	for i := 0; i < m; i++ {
 		curMax, curIndex := getMaxAndIndex(mat[i])
 		if curMax < lastMax {
-			return []int{i - 1, index}
+			return []int{i - 1, lastIndex}
 		}
-		lastMax, index = curMax, curIndex
+		lastMax, lastIndex = curMax, curIndex
 	}
-	return []int{-1, -1}
+	return []int{m - 1, lastIndex}
 }
 
 func getMaxAndIndex(nums []int) (max, index int) {

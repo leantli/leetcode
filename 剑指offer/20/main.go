@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"regexp"
+	"strings"
 )
 
 // https://leetcode.cn/problems/biao-shi-shu-zhi-de-zi-fu-chuan-lcof/?envType=study-plan&id=lcof&plan=lcof&plan_progress=131d40r
@@ -10,7 +10,7 @@ import (
 
 // 有不少判断
 // 我感觉用正则比较好
-// 其次就是自己手动写各种条件判断
+// 其次就是自己手动写各种条件判断 或 状态机写法
 // 1. 预处理前后空格
 // 2. 判断是否存在非法字符
 // 3. 判断是小数还是整数
@@ -35,11 +35,11 @@ import (
 // 当然，整合各种匹配条件后，两个子表达式就够了
 // (\d*\.\d+) 匹配小数的情况，包括 1.1, .1 等情况
 // (\d+\.?\d*) 匹配整数和小数的部分情况，包括 111, 1., 1.1 等情况
-var matchRE = regexp.MustCompile(`^[\s]*[+-]?((\d*\.\d+)|(\d+\.?\d*))([eE][+-]?\d+)?[\s]*$`)
+// var matchRE = regexp.MustCompile(`^[\s]*[+-]?((\d*\.\d+)|(\d+\.?\d*))([eE][+-]?\d+)?[\s]*$`)
 
-func isNumber(s string) bool {
-	return matchRE.MatchString(s)
-}
+// func isNumber(s string) bool {
+// 	return matchRE.MatchString(s)
+// }
 
 func main() {
 	fmt.Println(isNumber("  +100e+5.6    "))
@@ -49,4 +49,56 @@ func main() {
 	fmt.Println(isNumber("  +-100e-5    "))
 	fmt.Println(isNumber("  +.5    "))
 	fmt.Println(isNumber("  +5.5.5    "))
+}
+
+// 常规
+// 空格 符号 小数/整数(小数中 '.' 点前可以有符号和数字，点后至少有一位数字) e/E 符号 整数 空格
+func isNumber(s string) bool {
+	s = strings.TrimSpace(s)
+	var dotFlag, expFlag, numFlag bool // 是否遇到过小数点、E/e、数字
+	for i := range s {
+		switch {
+		case isDigit(s[i]):
+			numFlag = true
+			// 如果是 + -，要么符号是在首位，要么前一位是 e/E
+		case (s[i] == '+' || s[i] == '-') && (i == 0 || s[i-1] == 'E' || s[i-1] == 'e'):
+			continue
+			// 遇到 e/E，前面要遇到过数字，没出现过 e/E；后面也要有数字，因此将 numFlag 重新置为 false
+		case (s[i] == 'E' || s[i] == 'e') && (!expFlag && numFlag):
+			expFlag = true
+			numFlag = false
+			// 遇到 . 前面不能出现过 exp，也不能重复出现小数点
+		case (s[i] == '.') && (!expFlag && !dotFlag):
+			dotFlag = true
+		default:
+			return false
+		}
+	}
+	return numFlag
+}
+
+func isDigit(b byte) bool {
+	switch b {
+	case '0':
+		return true
+	case '1':
+		return true
+	case '2':
+		return true
+	case '3':
+		return true
+	case '4':
+		return true
+	case '5':
+		return true
+	case '6':
+		return true
+	case '7':
+		return true
+	case '8':
+		return true
+	case '9':
+		return true
+	}
+	return false
 }

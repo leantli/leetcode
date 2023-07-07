@@ -5,46 +5,67 @@ package main
 
 // 看到后马上就是两种思路: 1. 单向遍历 2. 二分
 // 单向遍历可能会超时，直接不写
-
 func search(nums []int, target int) int {
-	index := locateTargetIndex(nums, target)
-	if index == -1 {
-		return 0
+	n := len(nums)
+	if n == 0 {
+		return n
 	}
-	count := 1
-	for i := index - 1; i >= 0; i-- {
-		if nums[i] == target {
-			count++
+	l, r := -1, n
+	for l+1 != r {
+		mid := l + (r-l)/2
+		if nums[mid] <= target {
+			l = mid
 		} else {
-			break
+			r = mid
 		}
+		// fmt.Println(l,r)
 	}
-	for i := index + 1; i < len(nums); i++ {
-		if nums[i] == target {
-			count++
-		} else {
-			break
-		}
+	r = l
+	for l >= 0 && nums[l] == target {
+		l--
 	}
-	return count
+	return r - l
 }
 
-func locateTargetIndex(nums []int, target int) int {
-	l, r := 0, len(nums)-1
-	for l <= r {
-		mid := l + (r-l)/2
-		if nums[mid] == target {
-			return mid
-		}
-		if nums[mid] < target {
-			l = mid + 1
-		}
-		if nums[mid] > target {
-			r = mid - 1
-		}
-	}
-	return -1
-}
+// func search(nums []int, target int) int {
+// 	index := locateTargetIndex(nums, target)
+// 	if index == -1 {
+// 		return 0
+// 	}
+// 	count := 1
+// 	for i := index - 1; i >= 0; i-- {
+// 		if nums[i] == target {
+// 			count++
+// 		} else {
+// 			break
+// 		}
+// 	}
+// 	for i := index + 1; i < len(nums); i++ {
+// 		if nums[i] == target {
+// 			count++
+// 		} else {
+// 			break
+// 		}
+// 	}
+// 	return count
+// }
+
+// func locateTargetIndex(nums []int, target int) int {
+// 	l, r := 0, len(nums)-1
+// 	for l <= r {
+// 		mid := l + (r-l)/2
+// 		if nums[mid] == target {
+// 			return mid
+// 		}
+// 		if nums[mid] < target {
+// 			l = mid + 1
+// 		}
+// 		if nums[mid] > target {
+// 			r = mid - 1
+// 		}
+// 	}
+// 	return -1
+// }
 
 // 大佬的
 // 1. 找到最后一个< target的数字下标，记为 L

@@ -11,23 +11,34 @@ package main
  * }
  */
 
-// 先试了一下递归，感觉递归不如直接迭代好处理，还是直接迭代完事，最后特殊处理一下头节点就ok
-
+// 重新试试递归
 func deleteNode(head *ListNode, val int) *ListNode {
+	if head == nil {
+		return head
+	}
 	if head.Val == val {
 		return head.Next
 	}
-	l, r := head, head
-	for r != nil {
-		r = r.Next
-		if r.Val == val {
-			l.Next = r.Next
-			break
-		}
-		l = l.Next
-	}
+	head.Next = deleteNode(head.Next, val)
 	return head
 }
+
+// // 先试了一下递归，感觉递归不如直接迭代好处理，还是直接迭代完事，最后特殊处理一下头节点就ok
+// func deleteNode(head *ListNode, val int) *ListNode {
+// 	if head.Val == val {
+// 		return head.Next
+// 	}
+// 	l, r := head, head
+// 	for r != nil {
+// 		r = r.Next
+// 		if r.Val == val {
+// 			l.Next = r.Next
+// 			break
+// 		}
+// 		l = l.Next
+// 	}
+// 	return head
+// }
 
 type ListNode struct {
 	Val  int

@@ -9,13 +9,16 @@ package main
 func minArray(numbers []int) int {
 	l, r := 0, len(numbers)-1
 	for l < r {
-		m := l + (r-l)/2
-		if numbers[m] > numbers[r] {
-			l = m + 1
-		} else if numbers[m] < numbers[r] {
-			r = m
-		} else {
+		mid := l + (r-l)/2
+		// 去除首尾的重复元素，保证两个单调区间的单调性
+		if numbers[mid] == numbers[r] {
 			r--
+			continue
+		}
+		if numbers[mid] < numbers[r] {
+			r = mid
+		} else {
+			l = mid + 1
 		}
 	}
 	return numbers[r]

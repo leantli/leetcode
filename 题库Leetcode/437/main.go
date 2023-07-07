@@ -3,6 +3,31 @@ package main
 // https://leetcode.cn/problems/path-sum-iii/
 // 437. 路径总和 III
 
+// 二刷
+// 二叉树的前缀和？先算算
+func pathSum(root *TreeNode, targetSum int) int {
+	// 需要一个 map 存储当前已经计算到的节点的路径和，map 存放的 key-value 指 路径和-出现次数
+	// 由于 路径方向必须是向下的，我们可以采用 前序遍历，保证晚计算的都在之前计算的节点的下面
+	// 此时我们要计算是否满足 targetSum，需要 curSum - map 中所有其他已有的值 == target，符合则 res+= map中对应的value
+	// 不过这样需要每次都遍历全部 map，并不好，我们可以 curSum - target = map 中满足条件的 key，基于此无需遍历
+	var res int
+	m := map[int]int{0: 1}
+	var getSum func(root *TreeNode, curSum int)
+	getSum = func(root *TreeNode, curSum int) {
+		if root == nil {
+			return
+		}
+		curSum += root.Val
+		res += m[curSum-targetSum]
+		m[curSum]++
+		getSum(root.Left, curSum)
+		getSum(root.Right, curSum)
+		m[curSum]--
+	}
+	getSum(root, 0)
+	return res
+}
+
 // // 在 112. 路径总和 我们求过根结点到叶子节点路径和
 // // 但这次并没有要求从根结点到叶子节点，即路径上任意连通的节点和都可以，只要满足条件即可计算
 // // 那我们显然可以在 112 的基础上，减少掉对叶子节点的判断，只需sum相等即可
@@ -45,24 +70,24 @@ package main
 // 但是这样一来我们需要遍历整个 map，较为麻烦，这里我们可以直接用当前总和 - targetSum
 // 然后直接查看 map 中是否有这个和的值，有的话，就说明有这个路径和的路径都是可取的
 // 显然，这里的 map key-value<-->前序和-出现次数
-func pathSum(root *TreeNode, targetSum int) int {
-	var res int
-	preSumMapfrequency := map[int]int{0: 1}
-	var getPreSum func(root *TreeNode, curSum int)
-	getPreSum = func(root *TreeNode, curSum int) {
-		if root == nil {
-			return
-		}
-		curSum += root.Val
-		res += preSumMapfrequency[curSum-targetSum]
-		preSumMapfrequency[curSum]++
-		getPreSum(root.Left, curSum)
-		getPreSum(root.Right, curSum)
-		preSumMapfrequency[curSum]--
-	}
-	getPreSum(root, 0)
-	return res
-}
+// func pathSum(root *TreeNode, targetSum int) int {
+// 	var res int
+// 	preSumMapfrequency := map[int]int{0: 1}
+// 	var getPreSum func(root *TreeNode, curSum int)
+// 	getPreSum = func(root *TreeNode, curSum int) {
+// 		if root == nil {
+// 			return
+// 		}
+// 		curSum += root.Val
+// 		res += preSumMapfrequency[curSum-targetSum]
+// 		preSumMapfrequency[curSum]++
+// 		getPreSum(root.Left, curSum)
+// 		getPreSum(root.Right, curSum)
+// 		preSumMapfrequency[curSum]--
+// 	}
+// 	getPreSum(root, 0)
+// 	return res
+// }
 
 type TreeNode struct {
 	Val   int

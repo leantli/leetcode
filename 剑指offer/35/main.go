@@ -38,32 +38,26 @@ func deepCopy(node *Node) *Node {
 	return newNode
 }
 
-// 复制一个复杂链表，该链表的节点中存在一个 randowm 指针指向任意节点或 nil
-// 这里的难点就在于 random 指针可能指向后面的节点，此时我们还没复制到后面的节点，这个地方如何处理
-// 瞎写出来的做法 0ms，但是内存只击败了 24.37%
-
+// // 暴力一点，遍历两遍，并将原结点和新结点都存入一个 map 作为映射
 // func copyRandomList(head *Node) *Node {
-// 	var bucketOriginal = make(map[*Node]int)
-// 	var bucketNew = make(map[int]*Node)
-// 	var index int
+// 	fakeHead := &Node{}
+// 	curNew := fakeHead
+// 	m := make(map[*Node]*Node)
 // 	for head != nil {
-// 		bucketOriginal[head] = index
-// 		node := &Node{
-// 			Val: head.Val,
+// 		curNew.Next = &Node{
+// 			Val:    head.Val,
+// 			Random: head.Random,
 // 		}
-// 		bucketNew[index] = node
-// 		index++
+// 		curNew = curNew.Next
+// 		m[head] = curNew
 // 		head = head.Next
 // 	}
-// 	for node, i := range bucketOriginal {
-// 		bucketNew[i].Next = bucketNew[i+1]
-// 		if node.Random == nil {
-// 			bucketNew[i].Random = nil
-// 			continue
-// 		}
-// 		bucketNew[i].Random = bucketNew[bucketOriginal[node.Random]]
+// 	curNew = fakeHead.Next
+// 	for curNew != nil {
+// 		curNew.Random = m[curNew.Random]
+// 		curNew = curNew.Next
 // 	}
-// 	return bucketNew[0]
+// 	return fakeHead.Next
 // }
 
 type Node struct {

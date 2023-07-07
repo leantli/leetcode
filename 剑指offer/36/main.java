@@ -26,7 +26,6 @@ class Solution {
         } else head = root;
         pre = root;
         if (root.right != null) dfs(root.right);
-
     }
 }
 

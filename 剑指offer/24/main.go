@@ -13,7 +13,6 @@ package main
 
 // 先递归拿到最后面的节点，用于最终返回尾部节点
 // 再基于自身去改变转向
-
 func reverseList(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head

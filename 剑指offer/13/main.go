@@ -18,7 +18,7 @@ func movingCount(m int, n int, k int) int {
 
 func helper(mm [][]bool, m, n, x, y, k int) {
 	// 先判断边界，已经判断过的也直接返回
-	if x < 0 || x >= n || y < 0 || y >= m || mm[y][x] == true {
+	if x < 0 || x >= n || y < 0 || y >= m || mm[y][x] {
 		return
 	}
 	mm[y][x] = true
