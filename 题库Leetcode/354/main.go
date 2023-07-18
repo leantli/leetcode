@@ -59,37 +59,26 @@ func maxEnvelopes(envelopes [][]int) int {
 	sort.Slice(envelopes, func(i, j int) bool {
 		return envelopes[i][0] < envelopes[j][0] || (envelopes[i][0] == envelopes[j][0] && envelopes[i][1] > envelopes[j][1])
 	})
+	if len(envelopes) == 0 {
+		return 0
+	}
 	// tail[i] 表示 i+1 长度下，结尾的数字最小是哪个数
-	tail := make([]int, 0)
+	tail := []int{envelopes[0][1]}
 	for _, envelope := range envelopes {
-		idx := findInsertIdx(tail, envelope[1])
-		if idx == len(tail) {
+		if envelope[1] > tail[len(tail)-1] {
 			tail = append(tail, envelope[1])
-		} else {
-			tail[idx] = envelope[1]
+			continue
 		}
+		l, r := -1, len(tail)
+		for l+1 != r {
+			mid := l + (r-l)/2
+			if tail[mid] < envelope[1] {
+				l = mid
+			} else {
+				r = mid
+			}
+		}
+		tail[r] = envelope[1]
 	}
 	return len(tail)
 }
-
-// 在 tail 数组中找到 target 将要插入的位置
-func findInsertIdx(tail []int, target int) int {
-	l, r := -1, len(tail)
-	for l+1 != r {
-		mid := l + (r-l)/2
-		if tail[mid] < target {
-			l = mid
-		} else {
-			r = mid
-		}
-	}
-	return r
-}
-
-// // 判断a能否包含b，即b信封是否可以放进a信封，true表示可以
-// func canAContainB(a, b []int) bool {
-// 	if a[0] <= b[0] || a[1] <= b[1] {
-// 		return false
-// 	}
-// 	return true
-// }
