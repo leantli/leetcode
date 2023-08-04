@@ -3,48 +3,88 @@ package main
 // https://leetcode.cn/problems/longest-valid-parentheses/
 // 32. 最长有效括号
 
-// 比较巧妙的做法，不过我想不到就是了(
-// 利用两个计数器 l、r，遍历时计数左右括号的数量
-// 当 l, r 计数相同时，计算他们的长度，此时左右括号相等，能够正常匹配
-// 当 r 大于 l 时，l 和 r 都归零，因为右括号多了，没有多余的左括号匹配
-// 但是这样的话 (() 这样的括号就无法计算出最大长度
-// 因此我们可以反着再来一次，从尾部向前遍历，当 l 大于 r 时两个计数器都归零
+// 二刷
+// 求最长的连续有效括号的长度
+// 设 dp[i] 为以 i 下标为结尾的右括号，最长有效括号长度为多少
+// 当 s[i] 为左括号时，dp[i] = 0
+// 当 s[i] 为右括号时，若 s[i-1] = '('，则 dp[i] = dp[i-2] + 2
+// 当 s[i] 为右括号时，若 s[i-1] = ')'，则查看 s[i-dp[i-1]-1] 是否为 '('，是则 dp[i] = dp[i-1]+2+dp[i-dp[i-1]-2]，否则 dp[i] = 0
+// 这里为什么要加 dp[i-dp[i-1]-2]？比如说 ()(())，当我们遍历到最后一个右括号时，其和下标为 2 的 ( 匹配，但是最长有效括号并不只是 4，而是 6
+// 因为最左侧还有正常的有效的 () 需要计入
 func longestValidParentheses(s string) int {
-	var l, r, res int
+	dp := make([]int, len(s))
+	var res int
 	for i := range s {
 		if s[i] == '(' {
-			l++
-		} else {
-			r++
+			continue
 		}
-		if l == r {
-			res = max(l+r, res)
-		} else if r > l {
-			l, r = 0, 0
+		if i-1 >= 0 && s[i-1] == '(' {
+			dp[i] = 2
+			if i-2 >= 0 {
+				dp[i] += dp[i-2]
+			}
+		} else if i-1 >= 0 && s[i-1] == ')' {
+			if i-dp[i-1]-1 < 0 || s[i-dp[i-1]-1] == ')' {
+				continue
+			}
+			dp[i] = dp[i-1] + 2
+			if i-dp[i-1]-2 >= 0 {
+				dp[i] += dp[i-dp[i-1]-2]
+			}
 		}
-	}
-	l, r = 0, 0
-	for i := len(s) - 1; i >= 0; i-- {
-		if s[i] == ')' {
-			r++
-		} else {
-			l++
-		}
-		if l == r {
-			res = max(l+r, res)
-		} else if r < l {
-			l, r = 0, 0
-		}
+		res = max(res, dp[i])
 	}
 	return res
 }
-
 func max(a, b int) int {
 	if a > b {
 		return a
 	}
 	return b
 }
+
+// // 比较巧妙的做法，不过我想不到就是了(
+// // 利用两个计数器 l、r，遍历时计数左右括号的数量
+// // 当 l, r 计数相同时，计算他们的长度，此时左右括号相等，能够正常匹配
+// // 当 r 大于 l 时，l 和 r 都归零，因为右括号多了，没有多余的左括号匹配
+// // 但是这样的话 (() 这样的括号就无法计算出最大长度
+// // 因此我们可以反着再来一次，从尾部向前遍历，当 l 大于 r 时两个计数器都归零
+// func longestValidParentheses(s string) int {
+// 	var l, r, res int
+// 	for i := range s {
+// 		if s[i] == '(' {
+// 			l++
+// 		} else {
+// 			r++
+// 		}
+// 		if l == r {
+// 			res = max(l+r, res)
+// 		} else if r > l {
+// 			l, r = 0, 0
+// 		}
+// 	}
+// 	l, r = 0, 0
+// 	for i := len(s) - 1; i >= 0; i-- {
+// 		if s[i] == ')' {
+// 			r++
+// 		} else {
+// 			l++
+// 		}
+// 		if l == r {
+// 			res = max(l+r, res)
+// 		} else if r < l {
+// 			l, r = 0, 0
+// 		}
+// 	}
+// 	return res
+// }
+
+// func max(a, b int) int {
+// 	if a > b {
+// 		return a
+// 	}
+// 	return b
+// }
 
 // // 找出最长格式正确且连续的括号子串
 // // 格式正确的话最后结尾的一定是右括号
