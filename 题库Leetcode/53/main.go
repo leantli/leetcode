@@ -3,6 +3,29 @@ package main
 // https://leetcode.cn/problems/maximum-subarray/
 // 53. 最大子数组和
 
+// 二刷
+// 连续的子数组，和最大，有两种解法，一种是不定长滑动窗口，窗口的性质，就是大于0即可，大于0的话，无论后面加上什么数字，窗口内的原有和都是基于正向支持的
+// 第二种解法，是基于 dp 的，连续的子数组，求最大和，看起来是一个很典型的单串dp问题
+// dp[i] 表示以 nums[i] 为结尾的子数组最大和是多少
+// dp[i] = max(dp[i-1]+nums[i], nums[i])，并且由于 i 只由 i-1 决定，这里显然可以使用局部变量替代
+// dp[i] 是表示以 nums[i] 为结尾的子数组最大和是多少，因此 dp[n-1] 不一定是最终结果，最大和的子数组不一定以 nums[n-1] 为结尾
+// 所以我们需要一个额外的 res 变量去存储去比较各个 dp[i], 找到最大和
+func maxSubArray(nums []int) int {
+	res := -10001
+	var cur int
+	for _, num := range nums {
+		if cur >= 0 {
+			cur += num
+		} else {
+			cur = num
+		}
+		if res < cur {
+			res = cur
+		}
+	}
+	return res
+}
+
 // // 滑窗法
 // // 连续子数组，和最大
 // // 滑窗？窗口性质--窗口内数组和为非负数

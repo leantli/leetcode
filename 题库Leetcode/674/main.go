@@ -4,6 +4,24 @@ package main
 // 674. 最长连续递增序列
 
 // 二刷
+// 这里要求的子序列需要连续，算是子数组？连续递增子数组
+// 直接判断连续的最长的递增子数组的长度即可
+func findLengthOfLCIS(nums []int) int {
+	res, cnt := 1, 1
+	for i := 0; i < len(nums)-1; i++ {
+		if nums[i] < nums[i+1] {
+			cnt++
+			if cnt > res {
+				res = cnt
+			}
+		} else {
+			cnt = 1
+		}
+	}
+	return res
+}
+
+// 二刷
 // 数组未排序，要找最长的连续递增的子序列，注意此处有连续，比正常子序列多了连续的限制
 // 算是 LIS 的简化版本，因为这里连续，因此我们可以利用不定长滑动窗口解决
 // 窗口性质---递增
@@ -29,37 +47,39 @@ package main
 // 初始化：全部dp[i]置为1，因为所有数字单独都能成为连续递增子序列
 // 状态转移：
 // dp[i] = dp[i-1]+1, nums[i]>nums[i-1]时
+//
+//	func findLengthOfLCIS(nums []int) int {
+//		res := 1
+//		dp := make([]int, len(nums))
+//		for i := range nums {
+//			dp[i] = 1
+//		}
+//		for i := 1; i < len(nums); i++ {
+//			if nums[i] > nums[i-1] {
+//				dp[i] = dp[i-1] + 1
+//			}
+//			if dp[i] > res {
+//				res = dp[i]
+//			}
+//		}
+//		return res
+//	}
+//
+// // 并且我们注意，这个dp，其实只需要两个状态, i 和 i-1，因此我们完全无需维护一个dp数组
 // func findLengthOfLCIS(nums []int) int {
-// 	res := 1
-// 	dp := make([]int, len(nums))
-// 	for i := range nums {
-// 		dp[i] = 1
-// 	}
+// 	res, pre := 1, 1
 // 	for i := 1; i < len(nums); i++ {
 // 		if nums[i] > nums[i-1] {
-// 			dp[i] = dp[i-1] + 1
+// 			pre += 1
+// 		} else {
+// 			pre = 1
 // 		}
-// 		if dp[i] > res {
-// 			res = dp[i]
+// 		if pre > res {
+// 			res = pre
 // 		}
 // 	}
 // 	return res
 // }
-// 并且我们注意，这个dp，其实只需要两个状态, i 和 i-1，因此我们完全无需维护一个dp数组
-func findLengthOfLCIS(nums []int) int {
-	res, pre := 1, 1
-	for i := 1; i < len(nums); i++ {
-		if nums[i] > nums[i-1] {
-			pre += 1
-		} else {
-			pre = 1
-		}
-		if pre > res {
-			res = pre
-		}
-	}
-	return res
-}
 
 // // 最长 递增的子序列
 // // 不定长滑动窗口，窗口内性质为递增

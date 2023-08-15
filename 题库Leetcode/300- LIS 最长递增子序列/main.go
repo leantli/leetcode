@@ -3,6 +3,61 @@ package main
 // https://leetcode.cn/problems/longest-increasing-subsequence/
 // 300. 最长递增子序列
 
+// 二刷
+// 也可以基于贪心+二分，贪心的思路就是，维系一个 tail 数组
+// tail[i] 表示长度为 i+1 的递增子序列最后一位数最小是多少
+// 然后一次遍历，基于二分去更新 tail 数组，如果遇到非常大的，比 tail[len(tail)-1] 还大，则直接添加到尾部
+// 这样能够保证，最终答案：最长严格递增子序列的长度就是 len(tail)
+func lengthOfLIS(nums []int) int {
+	tail := []int{nums[0]}
+	for i := 1; i < len(nums); i++ {
+		if nums[i] > tail[len(tail)-1] {
+			tail = append(tail, nums[i])
+			continue
+		}
+		l, r := -1, len(tail)
+		for l+1 != r {
+			mid := l + (r-l)/2
+			if tail[mid] < nums[i] {
+				l = mid
+			} else {
+				r = mid
+			}
+		}
+		// l 落在最后一个小于 nums[i] 的位置，r 落在第一个大于等于 nums[i] 的位置
+		// 如果 nums[i] 不是特别大，直接更新 r 下标对应的值
+		tail[r] = nums[i]
+	}
+	return len(tail)
+}
+
+// // 二刷
+// // 要求，遍历到最后时，确定最长的严格递增子序列的长度是多少
+// // 设 dp[i] 为以 nums[i] 为结尾时，最长的严格递增子序列长度是多少
+// // dp[i] = max(dp[i], dp[j]+1), if nums[i] > nums[j], j < i
+// func lengthOfLIS(nums []int) int {
+//     dp := make([]int, len(nums))
+//     res := 1
+//     for i := range dp {
+//         dp[i] = 1
+//     }
+//     for i := 1; i < len(nums); i++ {
+//         for j := 0; j < i; j++ {
+//             if nums[i] > nums[j] {
+//                 dp[i] = max(dp[i], dp[j]+1)
+//             }
+//         }
+//         res = max(res, dp[i])
+//     }
+//     return res
+// }
+// func max(a, b int) int {
+//     if a > b {
+//         return a
+//     }
+//     return b
+// }
+
 // // 第二次做这道题，先考虑常规dp
 // // 找最长递增子序列的长度，子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序
 // // 定义 dp[i] 为 以 nums[i] 为结尾时，最长递增子序列的长度
@@ -32,43 +87,43 @@ package main
 // 	return b
 // }
 
-// 再考虑贪心+dp+二分
-// 定义 tail[i] 为长度为i+1的情况下，末尾的数为多少
-// 初始化 tail[0]=nums[0]，表示长度为1的情况下，末尾的数为nums[0]
-// 一次遍历过去，遇到比tail[end]大的数，直接append到tail末尾，成为新的end
-// 如果不比end大，则二分查找tail数组，找到刚好小于它的，替换掉这个数右侧的数字
-// 当然，tail数组本身并不代表LIS，因为中间的数部分是最新的，显然无法与其右侧的数构成LIS
-// 它算是一个严格上升的状态数组，我们能够基于这个状态数组，求出LIS的长度
-// 这里可以自行论证单调性，最终求出来tail数组的长度即为最长递增子序列的长度
-// 比如 1 2 5 3 4
-func lengthOfLIS(nums []int) int {
-	tail := make([]int, 0)
-	tail = append(tail, nums[0])
-	for i := 1; i < len(nums); i++ {
-		if nums[i] > tail[len(tail)-1] {
-			tail = append(tail, nums[i])
-			continue
-		}
-		l, r := -1, len(tail)
-		for l+1 != r {
-			mid := l + (r-l)/2
-			if tail[mid] < nums[i] {
-				l = mid
-			} else {
-				r = mid
-			}
-		}
-		tail[r] = nums[i]
-	}
-	return len(tail)
-}
+// // 再考虑贪心+dp+二分
+// // 定义 tail[i] 为长度为i+1的情况下，末尾的数为多少
+// // 初始化 tail[0]=nums[0]，表示长度为1的情况下，末尾的数为nums[0]
+// // 一次遍历过去，遇到比tail[end]大的数，直接append到tail末尾，成为新的end
+// // 如果不比end大，则二分查找tail数组，找到刚好小于它的，替换掉这个数右侧的数字
+// // 当然，tail数组本身并不代表LIS，因为中间的数部分是最新的，显然无法与其右侧的数构成LIS
+// // 它算是一个严格上升的状态数组，我们能够基于这个状态数组，求出LIS的长度
+// // 这里可以自行论证单调性，最终求出来tail数组的长度即为最长递增子序列的长度
+// // 比如 1 2 5 3 4
+// func lengthOfLIS(nums []int) int {
+// 	tail := make([]int, 0)
+// 	tail = append(tail, nums[0])
+// 	for i := 1; i < len(nums); i++ {
+// 		if nums[i] > tail[len(tail)-1] {
+// 			tail = append(tail, nums[i])
+// 			continue
+// 		}
+// 		l, r := -1, len(tail)
+// 		for l+1 != r {
+// 			mid := l + (r-l)/2
+// 			if tail[mid] < nums[i] {
+// 				l = mid
+// 			} else {
+// 				r = mid
+// 			}
+// 		}
+// 		tail[r] = nums[i]
+// 	}
+// 	return len(tail)
+// }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
+// func max(a, b int) int {
+// 	if a > b {
+// 		return a
+// 	}
+// 	return b
+// }
 
 // // 最后总结一下，该题的两种方法
 // // 基础 dp，dp[i] 表示以 nums[i] 为结尾时的最长长度递增子序列

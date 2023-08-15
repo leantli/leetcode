@@ -49,3 +49,29 @@ func combine(n int, k int) [][]int {
 	dfs(1)
 	return res
 }
+
+// // 另一种 dfs 写法，只判断当前的数取或不取，两种 dfs 路线
+// func combine(n int, k int) [][]int {
+// 	res := make([][]int, 0)
+// 	cur := make([]int, 0)
+// 	var dfs func(idx int)
+// 	dfs = func(idx int) {
+// 		// 剪枝，当 cur 当前的长度加上后续 [idx,n] 的所有元素也达不到 k 的长度时，直接放弃
+// 		if len(cur)+(n-idx) < k {
+// 			return
+// 		}
+// 		// 满足条件时，放入结果集中
+// 		if len(cur) == k {
+// 			res = append(res, append([]int{}, cur...))
+// 			return
+// 		}
+// 		// 跳过当前整数不取
+// 		dfs(idx + 1)
+// 		// 不跳过则取 idx 下标
+// 		cur = append(cur, idx+1)
+// 		dfs(idx + 1)
+// 		cur = cur[:len(cur)-1]
+// 	}
+// 	dfs(0)
+// 	return res
+// }

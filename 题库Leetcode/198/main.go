@@ -3,22 +3,29 @@ package main
 // https://leetcode.cn/problems/house-robber/
 // 198. 打家劫舍
 
+// // 二刷
 // 每个房屋相邻不能被偷，如何定义状态呢？
 // dp[i] 定义为什么？i 房屋有偷和不偷两个状态
 // 假设我要偷第 i 家, dp[i] = nums[i] + dp[i-2]
 // 假设我不偷第 i 家， dp[i] = dp[i-1]
 // 那么前 i 家的最高偷窃金额为 dp[i] = max(dp[i-1], dp[i-2]+nums[i])
+// 并且由于 i 只由 i-1 和 i-2 决定，显然可以采用局部变量 a, b = b, max(b, a+nums[i])
 func rob(nums []int) int {
 	n := len(nums)
 	if n == 1 {
 		return nums[0]
 	}
-	// 并且，我们发现，dp[i]只由i-1和i-2两个决定，因此可以使用两个局部变量替代dp数组的使用
-	ppre, pre := nums[0], max(nums[0], nums[1])
-	for _, num := range nums[2:] {
-		ppre, pre = pre, max(pre, ppre+num)
+	var a, b int
+	for _, num := range nums {
+		a, b = b, max(b, a+num)
 	}
-	return pre
+	return b
+}
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 
 // f[i] 偷第i家，则 f[i] = g[i-1]+nums[i]
@@ -35,10 +42,9 @@ func rob(nums []int) int {
 // 	}
 // 	return max(f, g)
 // }
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
+// func max(a, b int) int {
+// 	if a > b {
+// 		return a
+// 	}
+// 	return b
+// }
