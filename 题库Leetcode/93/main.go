@@ -19,6 +19,10 @@ func restoreIpAddresses(s string) []string {
 			res = append(res, strings.Join(cur, "."))
 			return
 		}
+		// 剪枝，cur 已经是 4 并且没在上面的判断中 return，则无需进行接下的拼接了
+		if len(cur) == 4 {
+			return
+		}
 		for i := idx; i < len(s); i++ {
 			// 剪枝，存在前导0的数排除，直接跳过，只有 0 能尝试加入
 			if s[idx] == '0' && idx != i {

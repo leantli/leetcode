@@ -10,11 +10,11 @@ func combinationSum3(k int, n int) [][]int {
 	var sum int
 	var dfs func(idx int)
 	dfs = func(idx int) {
-		if sum > n {
-			return
-		}
 		if sum == n && len(cur) == k {
 			res = append(res, append([]int{}, cur...))
+			return
+		}
+		if sum >= n {
 			return
 		}
 		for i := idx; i <= 9; i++ {
