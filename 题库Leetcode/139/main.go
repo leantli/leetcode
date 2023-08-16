@@ -65,7 +65,7 @@ package main
 // 第三次优化
 // 背包就是 s[0:0~i]，背包就是 wordDict[i]
 // 这里是判断，是否能够拼接成功，则 dp[i][j] 表示，从 0~i 中选取 wordDict，放入背包 j 中，能否拼接出对应的单词
-// dp[i][j] = dp[i-1][j-wordDict[i]] && wordDict[i] == s[j-wordDict[i]: j]
+// dp[i][j] = dp[i-1][j-len(wordDict[i])] && wordDict[i] == s[j-len(wordDict[i]): j]
 // 滚动数组优化降维 dp[j] = dp[j-len(wordDict[i])] && wordDict[i] == s[j-len(wordDict[i]): j] && !dp[j]
 // 即当 dp[j-len(word)] 为 true，并且 dp[j] 本身还是 false 时，并且 s[j-len(word):j] == word，此时 dp[j] = true
 func wordBreak(s string, wordDict []string) bool {
