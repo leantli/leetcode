@@ -11,7 +11,7 @@ func pathSum(root *TreeNode, targetSum int) int {
 	// 此时我们要计算是否满足 targetSum，需要 curSum - map 中所有其他已有的值 == target，符合则 res+= map中对应的value
 	// 不过这样需要每次都遍历全部 map，并不好，我们可以 curSum - target = map 中满足条件的 key，基于此无需遍历
 	var res int
-	m := map[int]int{0: 1}
+	m := map[int]int{0: 1} // 同时在 map 中初始化一个 {0:1}，当 curSum 刚好等于 targetSum, 自身也能成路径
 	var getSum func(root *TreeNode, curSum int)
 	getSum = func(root *TreeNode, curSum int) {
 		if root == nil {

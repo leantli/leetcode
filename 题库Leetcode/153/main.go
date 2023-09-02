@@ -3,6 +3,22 @@ package main
 // https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/?envType=study-plan&id=binary-search-beginner&plan=binary-search&plan_progress=cnhyx51
 // 153. 寻找旋转排序数组中的最小值
 
+// 二刷，不管怎么旋转，一般总是有两个升序区间，也有可能只有一个
+// 但是我们基于 mid 和 r 指向的数进行比较，只要 nums[mid] < nums[r]
+// 就说明，mid 这个值，是我们要选取的可能的值
+func findMin(nums []int) int {
+	l, r := 0, len(nums)-1
+	for l < r {
+		mid := l + (r-l)/2
+		if nums[mid] <= nums[r] {
+			r = mid
+		} else {
+			l = mid + 1
+		}
+	}
+	return nums[l]
+}
+
 // 可以观察到，旋转一次就是把最后的数提到最前面
 // 并且旋转次数不定，因此该数组旋转后，可能还是原数组，全局升序
 // 常规旋转后，应该是存在两个局部升序区间
@@ -29,18 +45,18 @@ package main
 // 	return nums[r]
 // }
 
-// 只要 mid 比最右边的小，我们就 r = mid
-// 其余情况，mid 肯定都在左侧的局部递增区间，因此可以直接 l = mid+1
-func findMin(nums []int) int {
-	n := len(nums)
-	l, r := 0, n-1
-	for l < r {
-		mid := l + (r-l)/2
-		if nums[mid] < nums[n-1] {
-			r = mid
-		} else {
-			l = mid + 1
-		}
-	}
-	return nums[r]
-}
+// // 只要 mid 比最右边的小，我们就 r = mid
+// // 其余情况，mid 肯定都在左侧的局部递增区间，因此可以直接 l = mid+1
+// func findMin(nums []int) int {
+// 	n := len(nums)
+// 	l, r := 0, n-1
+// 	for l < r {
+// 		mid := l + (r-l)/2
+// 		if nums[mid] < nums[n-1] {
+// 			r = mid
+// 		} else {
+// 			l = mid + 1
+// 		}
+// 	}
+// 	return nums[r]
+// }
